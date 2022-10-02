@@ -277,7 +277,8 @@ class GroupedGaborFilterbank(nn.Module):
             pool_init: float = 0.4,
             conv_win_factor: float = 3 ,
             stride_factor: float = 1.,
-            init_filter: str = 'mel'
+            init_filter: str = 'mel',
+            trainable=True
     ):
         super(GroupedGaborFilterbank, self).__init__()
         # fixed inits
@@ -298,10 +299,18 @@ class GroupedGaborFilterbank(nn.Module):
             sample_rate,
             filter_type=init_filter
         )
-        self.center_freqs = nn.Parameter(center_freqs)
-        self.bandwidths = nn.Parameter(bandwidths)
+
+        self.center_freqs = nn.Parameter(
+            center_freqs,
+            requires_grad=trainable
+        )
+        self.bandwidths = nn.Parameter(
+            bandwidths,
+            requires_grad=trainable
+        )
         self.pooling_widths = nn.Parameter(
-            torch.full((n_filters,), float(pool_init))
+            torch.full((n_filters,), float(pool_init)),
+            requires_grad=trainable
         )
 
         # parameters for clamping
@@ -538,7 +547,8 @@ class EfficientLeaf(nn.Module):
             conv_win_factor: float=4.77,
             stride_factor: float=1.,
             compression: Union[str, torch.nn.Module]='logtbn',
-            init_filter: str = 'mel'
+            init_filter: str = 'mel',
+            trainable: bool = True
     ):
         super(EfficientLeaf, self).__init__()
 
@@ -557,7 +567,8 @@ class EfficientLeaf(nn.Module):
             pool_stride=window_stride,
             conv_win_factor=conv_win_factor,
             stride_factor=stride_factor,
-            init_filter=init_filter
+            init_filter=init_filter,
+            trainable=trainable
         )
 
         if compression == 'pcen':

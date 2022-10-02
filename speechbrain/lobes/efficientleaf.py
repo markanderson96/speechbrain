@@ -601,5 +601,5 @@ class EfficientLeaf(nn.Module):
             x = x[:, np.newaxis]
         x = self.filterbank(x)
         x = self.compression(x)
-
+        x = x.transpose(1,2)
         return x

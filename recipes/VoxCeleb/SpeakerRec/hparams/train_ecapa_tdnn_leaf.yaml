@@ -4,19 +4,20 @@
 # ################################
 
 # Basic parameters
-seed: 1986
+seed: 1987 
 __set_seed: !apply:torch.manual_seed [!ref <seed>]
 output_folder: !ref results/ecapa_augment/<seed>
 save_folder: !ref <output_folder>/save
 train_log: !ref <output_folder>/train_log.txt
 
 # Data files
-data_folder: !PLACEHOLDER  # e.g. /path/to/Voxceleb
-train_annotation: !ref <save_folder>/train.csv
-valid_annotation: !ref <save_folder>/dev.csv
+data_folder: /home/andersm3/data/VoxCeleb  # e.g. /path/to/Voxceleb
+annot_folder: /home/andersm3/data/VoxData
+train_annotation: !ref <annot_folder>/train.csv
+valid_annotation: !ref <annot_folder>/dev.csv
 
 # Folder to extract data augmentation files
-rir_folder: !ref <data_folder> # Change it if needed
+rir_folder: /home/andersm3/data/Others/RIRS_NOISES # Change it if needed
 
 # Use the following links for the official voxceleb splits:
 # VoxCeleb1 (cleaned): https://www.robots.ox.ac.uk/~vgg/data/voxceleb/meta/veri_test2.txt
@@ -45,10 +46,10 @@ random_chunk: True
 n_filters: 40
 compression: 'pcen'
 init_filter: 'mel'
-trainable: false
+trainable: true 
 
 # Number of speakers
-out_n_neurons: 7205 #1211 for vox1  # 5994 for vox2, 7205 for vox1+vox2
+out_n_neurons: 5994 #1211 for vox1  # 5994 for vox2, 7205 for vox1+vox2
 
 dataloader_options:
     batch_size: !ref <batch_size>
@@ -59,12 +60,12 @@ dataloader_options:
 compute_features: !new:speechbrain.lobes.features.ELeaf
     n_filters: !ref <n_filters>
     compression: !ref <compression>
-    init_filters: !ref <init_filter>
+    init_filter: !ref <init_filter>
     trainable: !ref <trainable>
 
 embedding_model: !new:speechbrain.lobes.models.ECAPA_TDNN.ECAPA_TDNN
-    input_size: !ref <n_mels>
-    channels: [1024, 1024, 1024, 1024, 3072]
+    input_size: !ref <n_filters>
+    channels: [256, 256, 256, 256, 768]
     kernel_sizes: [5, 3, 3, 3, 1]
     dilations: [1, 2, 3, 4, 1]
     groups: [1, 1, 1, 1, 1]

@@ -17,8 +17,8 @@ from speechbrain.processing.features import (
 from speechbrain.nnet.CNN import GaborConv1d
 from speechbrain.nnet.normalization import PCEN
 from speechbrain.nnet.pooling import GaussianLowpassPooling
-from efficientleaf import EfficientLeaf
-
+from speechbrain.lobes.efficientleaf import EfficientLeaf
+from typing import Union
 
 class Fbank(torch.nn.Module):
     """Generate features for input to the speech pipeline.
@@ -319,12 +319,13 @@ class ELeaf(torch.nn.Module):
             init_filter: str = 'mel',
             trainable: bool = True
     ):
+        super().__init__()
         self.leaf = EfficientLeaf(
             n_filters=n_filters,
             num_groups=num_groups,
             min_freq=min_freq,
             max_freq=max_freq,
-            sample_rate=samplee_rate,
+            sample_rate=sample_rate,
             window_len=window_len,
             window_stride=window_stride,
             conv_win_factor=conv_win_factor,

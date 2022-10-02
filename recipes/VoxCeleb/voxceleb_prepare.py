@@ -530,11 +530,10 @@ def prepare_csv_enrol_test(data_folders, save_folder, verification_pairs_file):
 
 if __name__ == '__main__':
     data_folder = '/home/andersm3/data/VoxCeleb2'
-    veri
     save_folder = '/home/andersm3/data/VoxData'
     splits = ['train', 'dev', 'test']
     split_ratio = [90, 10]
-    verification_pairs_file = '/home/andersm3/data/VoxCeleb2/meta/veri_test.txt'
+    verification_pairs_file = '/home/andersm3/data/VoxCeleb2/meta/veri_test2.txt'
     prepare_voxceleb(
         data_folder, 
         save_folder, 

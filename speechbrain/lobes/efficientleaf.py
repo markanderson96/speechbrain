@@ -556,7 +556,7 @@ class EfficientLeaf(nn.Module):
         window_size = int(sample_rate * window_len / 1000)
         window_size += 1 - (window_size % 2)  # make odd
         window_stride = int(sample_rate * window_stride / 1000)
-
+        self.init_filter = init_filter
         self.filterbank = GroupedGaborFilterbank(
             n_filters,
             num_groups,

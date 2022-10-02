@@ -17,6 +17,7 @@ from speechbrain.processing.features import (
 from speechbrain.nnet.CNN import GaborConv1d
 from speechbrain.nnet.normalization import PCEN
 from speechbrain.nnet.pooling import GaussianLowpassPooling
+from efficientleaf import EfficientLeaf
 
 
 class Fbank(torch.nn.Module):
@@ -279,6 +280,62 @@ class MFCC(torch.nn.Module):
         if self.context:
             mfccs = self.context_window(mfccs)
         return mfccs
+
+class ELeaf(torch.nn.Module):
+    """
+    Custom class for my EfficientLeaf Implementation with custom
+    inits
+
+    Arguments
+    ---------
+    n_filters: number of filters
+    min_freq: minimum frequency
+                     (used for the mel filterbank initialization)
+    max_freq: maximum frequency
+                     (used for the mel filterbank initialization)
+    sample_rate: sample rate
+                        (used for the mel filterbank initialization)
+    window_len: kernel/filter size of the convolutions in ms
+    window_stride: stride used for the pooling convolution in ms
+    conv_win_factor: factor is multiplied with the kernel/filter size
+                            (filterbank)
+    stride_factor: factor is multiplied with the kernel/filter stride
+                          (filterbank)
+    compression: compression function used: 'pcen', 'logtbn'
+                        or a torch module (default: 'logtbn')
+    """
+    def __init__(
+            self,
+            n_filters: int=40,
+            num_groups: int=4,
+            min_freq: float=60.0,
+            max_freq: float=7800.0,
+            sample_rate: int=16000,
+            window_len: float=25.,
+            window_stride: float=10.,
+            conv_win_factor: float=4.77,
+            stride_factor: float=1.,
+            compression: Union[str, torch.nn.Module]='logtbn',
+            init_filter: str = 'mel',
+            trainable: bool = True
+    ):
+        self.leaf = EfficientLeaf(
+            n_filters=n_filters,
+            num_groups=num_groups,
+            min_freq=min_freq,
+            max_freq=max_freq,
+            sample_rate=samplee_rate,
+            window_len=window_len,
+            window_stride=window_stride,
+            conv_win_factor=conv_win_factor,
+            stride_factor=stride_factor,
+            compression=compression,
+            init_filter=init_filter,
+            trainable=trainable
+        )
+
+    def forward(self, x):
+        return self.leaf(x)
 
 
 class Leaf(torch.nn.Module):
